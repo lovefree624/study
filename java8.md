@@ -36,7 +36,7 @@ class User (
     }
 )
 ```
-我们在调用的时候可以这样调用，User :: getName()    来获取user对象的名称。
+我们在调用的时候可以这样调用，`User :: getName()`    来获取user对象的名称。	
 ## java8 的stream表达式
 ### 获取流的方式
 Stream 不是集合元素，它不是数据结构并不保存数据，它是有关算法和计算的，它更像一个高级版本的 Iterator。原始版本的 Iterator，用户只能显式地一个一个遍历元素并对其执行某些操作；高级版本的 Stream，用户只要给出需要对其包含的元素执行什么操作，比如 “过滤掉长度大于 10 的字符串”、“获取每个字符串的首字母”等，Stream 会隐式地在内部进行遍历，做出相应的数据转换。
@@ -49,7 +49,7 @@ Stream 就如同一个迭代器（Iterator），单向，不可往复，数据�
 
 获取一个数据源（source）→ 数据转换→执行操作获取想要的结果，每次转换原有 Stream 对象不改变，返回一个新的 Stream 对象（可以有多次转换），这就允许对其操作可以像链条一样排列，变成一个管道，如下图所示。
 ### 集合生成流的方式
-集合时我们使用Collection.stream(),Collection.parallelStream();
+集合时我们使用***Collection.stream(),Collection.parallelStream()***;
 #### 数组生成流的方式
 ```java
 String[] str = {"a","b","c"};
@@ -57,9 +57,15 @@ Arrays.stream(str);
 Arrays.asList(str).stream();
 ```
 #### 使用Stream生成流
-Stream.of(dd);// Stream.iterate();
+
+```java
+Stream.of(dd);
+Stream.iterate();
+```
+
 #### 文件生成流的方法
-java.io.BufferedReader.lines()；
+**java.io.BufferedReader.lines()；**
+
 ```java
 long uniqueWords = 0; 
 try(
@@ -73,18 +79,20 @@ catch(IOException e){
 }
 ```
 #### 创建无限流
-Stream API提供了两个静态方法来从函数生成流：Stream.iterate和Stream.generate。这两个操作可以创建所谓的无限流：不像从固定集合创建的流那样有固定大小的流。由iterate和generate产生的流会用给定的函数按需创建值，因此可以无穷无尽地计算下去！
+Stream API提供了两个静态方法来从函数生成流：`Stream.iterate`和`Stream.generate`。这两个操作可以创建所谓的无限流：不像从固定集合创建的流那样有固定大小的流。由iterate和generate产生的流会用给定的函数按需创建值，因此可以无穷无尽地计算下去！
 使用Stream.iterate()来创建
-### 流的操作类型分为两种：
-Intermediate：一个流可以后面跟随零个或多个 intermediate 操作。其目的主要是打开流，做出某种程度的数据映射/过滤，然后返回一个新的流，交给下一个操作使用。这类操作都是惰性化的（lazy），就是说，仅仅调用到这类方法，并没有真正开始流的遍历。
 
-Terminal：一个流只能有一个 terminal 操作，当这个操作执行后，流就被使用“光”了，无法再被操作。所以这必定是流的最后一个操作。Terminal 操作的执行，才会真正开始流的遍历，并且会生成一个结果，或者一个 side effect。
+### 流的操作类型分为两种：
+**Intermediate**：一个流可以后面跟随零个或多个 `intermediate` 操作。其目的主要是打开流，做出某种程度的`数据映射/过滤`，然后返回一个新的流，交给下一个操作使用。这类操作都是惰性化的（lazy），就是说，仅仅调用到这类方法，并没有真正开始流的遍历。
+
+**Terminal**：一个流只能有一个 terminal 操作，终止操作，当这个操作执行后，流就被使用“光”了，无法再被操作。所以这必定是流的最后一个操作。Terminal 操作的执行，才会真正开始流的遍历，并且会生成一个结果，或者一个 side effect。
 
 在对于一个 Stream 进行多次转换操作 (Intermediate 操作)，每次都对 Stream 的每个元素进行转换，而且是执行多次，这样时间复杂度就是 N（转换次数）个 for 循环里把所有操作都做掉的总和吗？其实不是这样的，转换操作都是 lazy 的，多个转换操作只会在 Terminal 操作的时候融合起来，一次循环完成。我们可以这样简单的理解，Stream 里有个操作函数的集合，每次转换操作就是把转换函数放入这个集合中，在 Terminal 操作的时候循环 Stream 对应的集合，然后对每个元素执行所有的函数。
 ### 流的构造与转换
 下面提供最常见的几种构造 Stream 的样例。
 
-清单 4. 构造流的几种常见方法
+**清单 4. 构造流的几种常见方法**
+
 ```java
 // 1. Individual values
 Stream stream = Stream.of("a", "b", "c");
@@ -98,17 +106,19 @@ stream = list.stream();
 ```
 需要注意的是，对于基本数值型，目前有三种对应的包装类型 Stream：
 
-IntStream、LongStream、DoubleStream。当然我们也可以用 Stream<Integer>、Stream<Long> >、Stream<Double>，但是 boxing 和 unboxing 会很耗时，所以特别为这三种基本数值型提供了对应的 Stream。
+***IntStream***、***LongStream***、***DoubleStream***。当然我们也可以用 ***Stream<Integer>***、**Stream<Long>**、***Stream<Double>***，但是 boxing 和 unboxing 会很耗时，所以特别为这三种基本数值型提供了对应的 Stream。
 
 Java 8 中还没有提供其它数值型 Stream，因为这将导致扩增的内容较多。而常规的数值型聚合运算可以通过上面三种 Stream 进行。
 
-清单 5. 数值流的构造
+**清单 5. 数值流的构造**
+
 ```java
-IntStream.of(new int[]{1, 2, 3}).forEach(System.out::println);
-IntStream.range(1, 3).forEach(System.out::println);
-IntStream.rangeClosed(1, 3).forEach(System.out::println);
+IntStream.of(new int[]{1, 2, 3}).forEach(System.out::println);//1,2,3
+IntStream.range(1, 3).forEach(System.out::println);//1,2
+IntStream.rangeClosed(1, 3).forEach(System.out::println);//1,2,3
 ```
-清单 6. 流转换为其它数据结构
+**清单 6. 流转换为其它数据结构**
+
 ```java
 // 1. Array
 String[] strArray1 = stream.toArray(String[]::new);
@@ -118,25 +128,27 @@ List<String> list2 = stream.collect(Collectors.toCollection(ArrayList::new));
 Set set1 = stream.collect(Collectors.toSet());
 Stack stack1 = stream.collect(Collectors.toCollection(Stack::new));
 // 3. String
-String str = stream.collect(Collectors.joining()).toString();
+String str = stream.collect(Collectors.joining()).toString();//拼接string
 ```
 一个 Stream 只可以使用一次，上面的代码为了简洁而重复使用了数次。
 ### 流的操作
 接下来，当把一个数据结构包装成 Stream 后，就要开始对里面的元素进行各类操作了。常见的操作可以归类如下。
 
-Intermediate：
+#### Intermediate：
 map (mapToInt, flatMap 等)、 filter、 distinct、 sorted、 peek、 limit、 skip、 parallel、 sequential、 unordered
 
-Terminal：
+#### Terminal：
 forEach、 forEachOrdered、 toArray、 reduce、 collect、 min、 max、 count、 anyMatch、 allMatch、 noneMatch、 findFirst、 findAny、 iterator
 
-Short-circuiting：
+#### Short-circuiting：
 anyMatch、 allMatch、 noneMatch、 findFirst、 findAny、 limit
+
 ### 举例各个关键操作的用法
 #### map/flatMap
-我们先来看 map。如果你熟悉 scala 这类函数式语言，对这个方法应该很了解，它的作用就是把 input Stream 的每一个元素，映射成 output Stream 的另外一个元素。
+我们先来看 map。如果你熟悉 scala 这类函数式语言，对这个方法应该很了解，它的作用就是把 input Stream 的`每一个元素`，映射成 output Stream 的另外一个元素。
 
-清单 7. 转换大写
+**清单 7. 转换大写**
+
 ```java
 List<String> output = wordList.stream().
 map(String::toUpperCase).
@@ -144,7 +156,8 @@ collect(Collectors.toList());
 ```
 这段代码把所有的单词转换为大写。
 
-清单 8. 平方数
+**清单 8. 平方数**
+
 ```java
 List<Integer> nums = Arrays.asList(1, 2, 3, 4);
 List<Integer> squareNums = nums.stream().
@@ -153,9 +166,10 @@ collect(Collectors.toList());
 ```
 这段代码生成一个整数 list 的平方数 {1, 4, 9, 16}。
 
-从上面例子可以看出，map 生成的是个 1:1 映射，每个输入元素，都按照规则转换成为另外一个元素。还有一些场景，是一对多映射关系的，这时需要 flatMap。
+从上面例子可以看出，map 生成的是个 1:1 映射，每个输入元素，都按照规则转换成为另外一个元素。还有一些场景，`是一对多映射关系的，这时需要 flatMap`。
 
-清单 9. 一对多
+**清单 9. 一对多**
+
 ```java
 Stream<List<Integer>> inputStream = Stream.of(
  Arrays.asList(1),
@@ -169,27 +183,30 @@ flatMap 把 input Stream 中的层级结构扁平化，就是将最底层元素�
 #### filter
 filter 对原始 Stream 进行某项测试，通过测试的元素被留下来生成一个新 Stream。
 
-清单 10. 留下偶数
+**清单 10. 留下偶数**
+
 ```java
 Integer[] sixNums = {1, 2, 3, 4, 5, 6};
 Integer[] evens =
-Stream.of(sixNums).filter(n -> n%2 == 0).toArray(Integer[]::new);
+Stream.of(sixNums).filter(n -> n%2 == 0).toArray(Integer[]::new);//创造一个新的integer数组
 ```
 经过条件“被 2 整除”的 filter，剩下的数字为 {2, 4, 6}。
 
-清单 11. 把单词挑出来
+**清单 11. 把单词挑出来**
+
 ```java
 List<String> output = reader.lines().
  flatMap(line -> Stream.of(line.split(REGEXP))).
  filter(word -> word.length() > 0).
  collect(Collectors.toList());
- ```
+```
 这段代码首先把每行的单词用 flatMap 整理到新的 Stream，然后保留长度不为 0 的，就是整篇文章中的全部单词了。
 #### forEach
 
 forEach 方法接收一个 Lambda 表达式，然后在 Stream 的每一个元素上执行该表达式。
 
-清单 12. 打印姓名（forEach 和 pre-java8 的对比）
+**清单 12. 打印姓名（forEach 和 pre-java8 的对比）**
+
 ```java
 // Java 8
 roster.stream()
@@ -214,7 +231,8 @@ stream.forEach(element -> doAnotherThing(element));
 ```
 相反，具有相似功能的 intermediate 操作 peek 可以达到上述目的。如下是出现在该 api javadoc 上的一个示例。
 
-清单 13. peek 对每个元素执行操作并返回一个新的 Stream
+**清单 13. peek 对每个元素执行操作并返回一个新的 Stream**
+
 ```java
 Stream.of("one", "two", "three", "four")
  .filter(e -> e.length() > 3)
@@ -222,7 +240,7 @@ Stream.of("one", "two", "three", "four")
  .map(String::toUpperCase)
  .peek(e -> System.out.println("Mapped value: " + e))
  .collect(Collectors.toList());
- ```
+```
 forEach 不能修改自己包含的本地变量值，也不能用 break/return 之类的关键字提前结束循环。
 #### findFirst
 
@@ -230,7 +248,23 @@ forEach 不能修改自己包含的本地变量值，也不能用 break/return �
 
 这里比较重点的是它的返回值类型：Optional。这也是一个模仿 Scala 语言中的概念，作为一个容器，它可能含有某值，或者不包含。使用它的目的是尽可能避免 NullPointerException。
 
-清单 14. Optional 的两个用例
+```java
+public static void print() {
+            Optional<List<String>> first = Stream.of(Arrays.asList("as", "dasf"), Arrays.asList("fd")).findFirst();
+                        Optional<String> first1 = Stream.of(Arrays.asList("as", "dasf"), Arrays.asList("fd")).flatMap(e->e.stream()).findFirst();
+    		out.println(first.get());//[as, dasf]
+    out.println(first1.get());//as
+        };
+
+    public static void main(String[] args) {
+        print();
+    }
+```
+
+
+
+**清单 14. Optional 的两个用例**
+
 ```java
 String strA = " abcd ", strB = null;
 print(strA);
@@ -241,7 +275,7 @@ getLength("");
 getLength(strB);
 public static void print(String text) {
  // Java 8
- Optional.ofNullable(text).ifPresent(System.out::println);
+ Optional.ofNullable(text).ifPresent(System.out::println);//如果不为null，就打印出来
  // Pre-Java 8
  if (text != null) {
  System.out.println(text);
@@ -249,43 +283,43 @@ public static void print(String text) {
  }
 public static int getLength(String text) {
  // Java 8
-return Optional.ofNullable(text).map(String::length).orElse(-1);
+return Optional.ofNullable(text).map(String::length).orElse(-1);//判断字符串的长度，如果不为null，就打印长度，如果为null，就输出-1；
  // Pre-Java 8
 // return if (text != null) ? text.length() : -1;
  };
- ```
-在更复杂的 if (xx != null) 的情况中，使用 Optional 代码的可读性更好，而且它提供的是编译时检查，能极大的降低 NPE 这种 Runtime Exception 对程序的影响，或者迫使程序员更早的在编码阶段处理空值问题，而不是留到运行时再发现和调试。
+```
+ `Optional.ofNullable()`方法只能判断null，不能判断“”空值的情况，在更复杂的 if (xx != null) 的情况中，使用 Optional 代码的可读性更好，而且它提供的是编译时检查，能极大的降低 NPE 这种 Runtime Exception 对程序的影响，或者迫使程序员更早的在编码阶段处理空值问题，而不是留到运行时再发现和调试。
 
-Stream 中的 findAny、max/min、reduce 等方法等返回 Optional 值。还有例如 IntStream.average() 返回 OptionalDouble 等等。
+Stream 中的 `findAny`、`max/min`、`reduce` 等方法等返回 Optional 值。还有例如 `IntStream.average()` 返回 `OptionalDouble` 等等。
 #### reduce
 
-这个方法的主要作用是把 Stream 元素组合起来。它提供一个起始值（种子），然后依照运算规则（BinaryOperator），和前面 Stream 的第一个、第二个、第 n 个元素组合。从这个意义上说，字符串拼接、数值的 sum、min、max、average 都是特殊的 reduce。例如 Stream 的 sum 就相当于
+这个方法的主要作用是把 Stream 元素`组合`起来。它提供一个`起始值（种子）`，然后依照运算规则（BinaryOperator），和前面 Stream 的第一个、第二个、第 n 个元素组合。从这个意义上说，`字符串拼接、数值的 sum、min、max、average 都是特殊的 reduce`。例如 Stream 的 sum 就相当于
 ```java
 Integer sum = integers.reduce(0, (a, b) -> a+b); 或
-
 Integer sum = integers.reduce(0, Integer::sum);
 ```
 也有没有起始值的情况，这时会把 Stream 的前面两个元素组合起来，返回的是 Optional。
 
-清单 15. reduce 的用例
+**清单 15. reduce 的用例**
+
 ```java
 // 字符串连接，concat = "ABCD"
-String concat = Stream.of("A", "B", "C", "D").reduce("", String::concat); 
+String concat = Stream.of("A", "B", "C", "D").reduce("", String::concat); //起始值为空
 // 求最小值，minValue = -3.0
-double minValue = Stream.of(-1.5, 1.0, -3.0, -2.0).reduce(Double.MAX_VALUE, Double::min); 
+double minValue = Stream.of(-1.5, 1.0, -3.0, -2.0).reduce(Double.MAX_VALUE, Double::min); //起始值为0
 // 求和，sumValue = 10, 有起始值
-int sumValue = Stream.of(1, 2, 3, 4).reduce(0, Integer::sum);
+int sumValue = Stream.of(1, 2, 3, 4).reduce(0, Integer::sum);//起始值为0
 // 求和，sumValue = 10, 无起始值
 sumValue = Stream.of(1, 2, 3, 4).reduce(Integer::sum).get();
 // 过滤，字符串连接，concat = "ace"
 concat = Stream.of("a", "B", "c", "D", "e", "F").
  filter(x -> x.compareTo("Z") > 0).
  reduce("", String::concat);
- ```
+```
 上面代码例如第一个示例的 reduce()，第一个参数（空白字符）即为起始值，第二个参数（String::concat）为 BinaryOperator。这类有起始值的 reduce() 都返回具体的对象。而对于第四个示例没有起始值的 reduce()，由于可能没有足够的元素，返回的是 Optional，请留意这个区别。
 #### limit/skip
 
-limit 返回 Stream 的前面 n 个元素；skip 则是扔掉前 n 个元素（它是由一个叫 subStream 的方法改名而来）。
+limit ***返回 Stream 的前面 n 个元素***；skip 则是***扔掉前 n 个元素***（它是由一个叫 subStream 的方法改名而来）。
 
 清单 16. limit 和 skip 对运行次数的影响
 ```java
@@ -327,9 +361,10 @@ name10
 [name4, name5, name6, name7, name8, name9, name10]
 这是一个有 10，000 个元素的 Stream，但在 short-circuiting 操作 limit 和 skip 的作用下，管道中 map 操作指定的 getName() 方法的执行次数为 limit 所限定的 10 次，而最终返回结果在跳过前 3 个元素后只有后面 7 个返回。
 
-有一种情况是 limit/skip 无法达到 short-circuiting 目的的，就是把它们放在 Stream 的排序操作后，原因跟 sorted 这个 intermediate 操作有关：此时系统并不知道 Stream 排序后的次序如何，所以 sorted 中的操作看上去就像完全没有被 limit 或者 skip 一样。
+***有一种情况是 limit/skip 无法达到 short-circuiting 目的，就是把它们放在 Stream 的排序sorted操作后，原因跟 sorted 这个 intermediate 操作有关：此时系统并不知道 Stream 排序后的次序如何，所以 sorted 中的操作看上去就像完全没有被 limit 或者 skip 一样。***
 
-清单 17. limit 和 skip 对 sorted 后的运行次数无影响
+**清单 17. limit 和 skip 对 sorted 后的运行次数无影响**
+
 ```java
 List<Person> persons = new ArrayList();
  for (int i = 1; i <= 5; i++) {
@@ -356,9 +391,10 @@ name4
 最后有一点需要注意的是，对一个 parallel 的 Steam 管道来说，如果其元素是有序的，那么 limit 操作的成本会比较大，因为它的返回对象必须是前 n 个也有一样次序的元素。取而代之的策略是取消元素间的次序，或者不要用 parallel Stream。
 #### sorted
 
-对 Stream 的排序通过 sorted 进行，它比数组的排序更强之处在于你可以首先对 Stream 进行各类 map、filter、limit、skip 甚至 distinct 来减少元素数量后，再排序，这能帮助程序明显缩短执行时间。我们对清单 14 进行优化：
+对 Stream 的排序通过 sorted 进行，`它比数组的排序更强之处在于你可以首先对 Stream 进行各类 map、filter、limit、skip 甚至 distinct 来减少元素数量后`，再排序，这能帮助程序明显缩短执行时间。我们对清单 14 进行优化：
 
-清单 18. 优化：排序前进行 limit 和 skip
+**清单 18. 优化：排序前进行 limit 和 skip**
+
 ```java
 List<Person> persons = new ArrayList();
  for (int i = 1; i <= 5; i++) {
@@ -377,7 +413,8 @@ name1
 
 min 和 max 的功能也可以通过对 Stream 元素先排序，再 findFirst 来实现，但前者的性能会更好，为 O(n)，而 sorted 的成本是 O(n log n)。同时它们作为特殊的 reduce 方法被独立出来也是因为求最大最小值是很常见的操作。
 
-清单 19. 找出最长一行的长度
+**清单 19. 找出最长一行的长度**
+
 ```java
 BufferedReader br = new BufferedReader(new FileReader("c:\\SUService.log"));
 int longest = br.lines().
@@ -389,7 +426,8 @@ System.out.println(longest);
 ```
 下面的例子则使用 distinct 来找出不重复的单词。
 
-清单 20. 找出全文的单词，转小写，并排序
+**清单 20. 找出全文的单词，转小写，并排序**
+
 ```java
 List<String> words = br.lines().
  flatMap(line -> Stream.of(line.split(" "))).
@@ -530,7 +568,7 @@ IntStream、LongStream、DoubleStream。当然我们也可以用 Stream<Integer>
 int calories = menu.stream() 
                     .mapToInt(Dish::getCalories) 
                     .sum();
- ```
+```
 这个流返回的是基本类型的值，不是流，所以不能继续进行流的其他操作了。
 ##### 转换回对象流(boxed())
 同样，一旦有了数值流，你可能会想把它转换回非特化流。例如，IntStream上的操作只能产生原始整数： IntStream 的 map 操作接受的 Lambda 必须接受 int 并返回 int （一个IntUnaryOperator）。但是你可能想要生成另一类值，比如Dish。为此，你需要访问Stream接口中定义的那些更广义的操作。要把原始流转换成一般流（每个int都会装箱成一个Integer），可以使用boxed方法，如下所示：
@@ -546,7 +584,7 @@ Stream<Integer> stream = intStream.boxed();
 OptionalInt maxCalories = menu.stream() 
                                 .mapToInt(Dish::getCalories) 
                                 .max(); 
- ```
+```
 现在，如果没有最大值的话，你就可以显式处理OptionalInt去定义一个默认值了：
 int max = maxCalories.orElse(1);
 #### collect（数据收集器）
@@ -556,7 +594,7 @@ int max = maxCalories.orElse(1);
 ```java
 List<Transaction> transactions = 
  transactionStream.collect(Collectors.toList());
- ```
+```
 ##### counting
 long howManyDishes = menu.stream().collect(Collectors.counting()); 
 这还可以写得更为直接：
@@ -568,7 +606,7 @@ Comparator<Dish> dishCaloriesComparator =
 Optional<Dish> mostCalorieDish = 
  menu.stream() 
  .collect(maxBy(dishCaloriesComparator));
- ```
+```
 ##### summingInt
 它可接受一个把对象映射为求和所需int的函数，并返回一个收集器；该收集器在传递给普通的collect方法后即执行我们需要的汇总操作
 ```java
@@ -584,7 +622,7 @@ double avgCalories = menu.stream().collect(averagingInt(Dish::getCalories));
 ```java
 IntSummaryStatistics menuStatistics = 
  menu.stream().collect(summarizingInt(Dish::getCalories)); 
- ```
+```
 这个收集器会把所有这些信息收集到一个叫作IntSummaryStatistics的类里，它提供了方便的取值（getter）方法来访问结果。打印menuStatisticobject会得到以下输出：
 IntSummaryStatistics{count=9, sum=4300, min=120, average=477.777778, max=800} 
 同样，相应的summarizingLong和summarizingDouble工厂方法有相关LongSummaryStatisticsDoubleSummaryStatistics类型，适用于收集的属性是原始类型long或double的情况。
@@ -603,7 +641,7 @@ String shortMenu = menu.stream().map(Dish::getName).collect(joining(", "));
 ```java
 Map<Dish.Type, List<Dish>> dishesByType = 
  menu.stream().collect(groupingBy(Dish::getType)); 
- ```
+```
 其结果是下面的Map：
 {FISH=[prawns, salmon], OTHER=[french fries, rice, season fruit, pizza], MEAT=[pork, beef, chicken]} 
 这里，你给groupingBy方法传递了一个Function（以方法引用的形式），它提取了流中每一道Dish的Dish.Type。我们把这个Function叫作分类函数，因为它用来把流中的元素分成不同的组。如图6-4所示，分组操作的结果是一个Map，把分组函数返回的值作为映射的键，把流中所有具有这个分类值的项目的列表作为对应的映射值。在菜单分类的例子中，键就是菜的类型，
@@ -617,7 +655,7 @@ Map<CaloricLevel, List<Dish>> dishesByCaloricLevel = menu.stream().collect(
  CaloricLevel.NORMAL; 
  else return CaloricLevel.FAT; 
  } )); 
- ```
+```
 现在，你已经看到了如何对菜单中的菜肴按照类型和热量进行分组，但要是想同时按照这两个标准分类怎么办呢？分组的强大之处就在于它可以有效地组合。让我们来看看怎么做。
 ###### 多级分组
 要实现多级分组，我们可以使用一个由双参数版本的Collectors.groupingBy工厂方法创建的收集器，它除了普通的分类函数之外，还可以接受collector类型的第二个参数。那么要进行二级分组的话，我们可以把一个内层groupingBy传递给外层groupingBy，并定义一个为流中项目分类的二级标准，如代码清单6-2所示。
@@ -642,7 +680,7 @@ menu.stream().collect(
 ```java
 Map<Dish.Type, Long> typesCount = menu.stream().collect( 
  groupingBy(Dish::getType, counting())); 
- ```
+```
 其结果是下面的Map：
 {MEAT=3, FISH=2, OTHER=4} 还要注意，普通的单参数groupingBy(f)（其中f是分类函数）实际上是groupingBy(f, toList())的简便写法。再举一个例子，你可以把前面用于查找菜单中热量最高的菜肴的收集器改一改，按照菜的类
 型分类：
@@ -664,7 +702,7 @@ Map<Dish.Type, Dish> mostCaloricByType =
  collectingAndThen( 
  maxBy(comparingInt(Dish::getCalories)), 
  Optional::get))); 
- ```
+```
 这个工厂方法接受两个参数——要转换的收集器以及转换函数，并返回另一个收集器。这个收集器相当于旧收集器的一个包装，collect操作的最后一步就是将返回值用转换函数做一个映射。在这里，被包起来的收集器就是用maxBy建立的那个，而转换函数Optional::get则把返回的Optional中的值提取出来。前面已经说过，这个操作放在这里是安全的，因为reducing收集器永远都不会返回Optional.empty()。其结果是下面的Map：
 {FISH=salmon, OTHER=pizza, MEAT=pork} 把好几个收集器嵌套起来很常见，它们之间到底发生了什么可能不那么明显。图6-6可以直观地展示它们是怎么工作的。从最外层开始逐层向里，注意以下几点。
 > 收集器用虚线表示，因此groupingBy是最外层，根据菜肴的类型把菜单流分组，得到三个子流。
