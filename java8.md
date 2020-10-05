@@ -430,12 +430,12 @@ System.out.println(longest);
 
 ```java
 List<String> words = br.lines().
- flatMap(line -> Stream.of(line.split(" "))).
- filter(word -> word.length() > 0).
- map(String::toLowerCase).
- distinct().
- sorted().
- collect(Collectors.toList());
+ flatMap(line -> Stream.of(line.split(" "))).//每一行都是一个单词的数组
+ filter(word -> word.length() > 0).//过滤空的单词
+ map(String::toLowerCase).//全部变为小写
+ distinct().//删除重复的
+ sorted().//排序
+ collect(Collectors.toList());//转化为list输出
 br.close();
 System.out.println(words);
 ```
@@ -443,9 +443,9 @@ System.out.println(words);
 
 Stream 有三个 match 方法，从语义上说：
 
-allMatch：Stream 中全部元素符合传入的 predicate，返回 true
-anyMatch：Stream 中只要有一个元素符合传入的 predicate，返回 true
-noneMatch：Stream 中没有一个元素符合传入的 predicate，返回 true
+**allMatch(全部匹配)**：Stream 中全部元素符合传入的 predicate，返回 true 
+**anyMatch（部分匹配）**：Stream 中只要有一个元素符合传入的 predicate，返回 true
+**noneMatch（全部不匹配）**：Stream 中没有一个元素符合传入的 predicate，返回 true
 它们都不是要遍历全部元素才能返回结果。例如 allMatch 只要一个元素不满足条件，就 skip 剩下的所有元素，返回 false。对清单 13 中的 Person 类稍做修改，加入一个 age 属性和 getAge 方法。
 
 清单 21. 使用 Match
@@ -472,7 +472,8 @@ Stream.generate
 
 通过实现 Supplier 接口，你可以自己来控制流的生成。这种情形通常用于随机数、常量的 Stream，或者需要前后元素间维持着某种状态信息的 Stream。把 Supplier 实例传递给 Stream.generate() 生成的 Stream，默认是串行（相对 parallel 而言）但无序的（相对 ordered 而言）。由于它是无限的，在管道中，必须利用 limit 之类的操作限制 Stream 大小。
 
-清单 22. 生成 10 个随机整数
+**清单 22. 生成 10 个随机整数**
+
 ```java
 Random seed = new Random();
 Supplier<Integer> random = seed::nextInt;
@@ -483,7 +484,8 @@ limit(10).forEach(System.out::println);
 ```
 Stream.generate() 还接受自己实现的 Supplier。例如在构造海量测试数据的时候，用某种自动的规则给每一个变量赋值；或者依据公式计算 Stream 的每个元素值。这些都是维持状态信息的情形。
 
-清单 23. 自实现 Supplier
+**清单 23. 自实现 Supplier**
+
 ```java
 Stream.generate(new PersonSupplier()).
 limit(10).
@@ -513,7 +515,7 @@ Stream.iterate
 
 iterate 跟 reduce 操作很像，接受一个种子值，和一个 UnaryOperator（例如 f）。然后种子值成为 Stream 的第一个元素，f(seed) 为第二个，f(f(seed)) 第三个，以此类推。
 
-清单 24. 生成一个等差数列
+**清单 24. 生成一个等差数列**
 
 ```java
 Stream.iterate(0, n -> n + 3).limit(10). forEach(x -> System.out.print(x + " "));
@@ -527,7 +529,8 @@ Stream.iterate(0, n -> n + 3).limit(10). forEach(x -> System.out.print(x + " "))
 java.util.stream.Collectors 类的主要作用就是辅助进行各类有用的 reduction 操作，例如转变输出为 Collection，把 Stream 元素进行归组。
 #### groupingBy/partitioningBy
 
-清单 25. 按照年龄归组
+**清单 25. 按照年龄归组**
+
 ```java
 Map<Integer, List<Person>> personGroups = Stream.generate(new PersonSupplier()).
  limit(100).
@@ -559,7 +562,8 @@ System.out.println("Adult number: " + children.get(false).size());
 输出结果：
 Children number: 23 
 Adult number: 77
-在使用条件“年龄小于 18”进行分组后可以看到，不到 18 岁的未成年人是一组，成年人是另外一组。partitioningBy 其实是一种特殊的 groupingBy，它依照条件测试的是否两种结果来构造返回的数据结构，get(true) 和 get(false) 能即为全部的元素对象。
+在使用条件“年龄小于 18”进行分组后可以看到，不到 18 岁的未成年人是一组，成年人是另外一组。partitioningBy 其实是一种特殊的 groupingBy，*它依照条件测试的是否两种结果来构造返回的数据结构*，get(true) 和 get(false) 能即为全部的元素对象。
+
 #### 数据流的操作
 IntStream、LongStream、DoubleStream。当然我们也可以用 Stream<Integer>、Stream<Long> >、Stream<Double>，但是 boxing 和 unboxing 会很耗时，所以特别为这三种基本数值型提供了对应的 Stream。
 ##### 映射到数值流
