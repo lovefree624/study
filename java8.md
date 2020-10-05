@@ -543,7 +543,6 @@ while (it.hasNext()) {
 ```
 上面的 code，首先生成 100 人的信息，然后按照年龄归组，相同年龄的人放到同一个 list 中，可以看到如下的输出：
 
-
 Age 0 = 2
 Age 1 = 2
 Age 5 = 2
@@ -552,6 +551,7 @@ Age 9 = 1
 Age 11 = 2
 ……
 清单 26. 按照未成年人和成年人归组
+
 ```java
 Map<Boolean, List<Person>> children = Stream.generate(new PersonSupplier()).
  limit(100).
@@ -562,12 +562,12 @@ System.out.println("Adult number: " + children.get(false).size());
 输出结果：
 Children number: 23 
 Adult number: 77
-在使用条件“年龄小于 18”进行分组后可以看到，不到 18 岁的未成年人是一组，成年人是另外一组。partitioningBy 其实是一种特殊的 groupingBy，*它依照条件测试的是否两种结果来构造返回的数据结构*，get(true) 和 get(false) 能即为全部的元素对象。
+在使用条件“年龄小于 18”进行分组后可以看到，不到 18 岁的未成年人是一组，成年人是另外一组。partitioningBy 其实是一种特殊的 groupingBy，`*它依照条件测试的是否两种结果来构造返回的数据结构*`，get(true) 和 get(false) 能即为全部的元素对象。
 
 #### 数据流的操作
 IntStream、LongStream、DoubleStream。当然我们也可以用 Stream<Integer>、Stream<Long> >、Stream<Double>，但是 boxing 和 unboxing 会很耗时，所以特别为这三种基本数值型提供了对应的 Stream。
 ##### 映射到数值流
-将流转换为特化版本的常用方法是mapToInt、mapToDouble和mapToLong。这些方法和前面说的map方法的工作方式一样，只是它们返回的是一个特化流，而不是Stream<T>。
+将流转换为特化版本的常用方法是**mapToInt**、**mapToDouble**和**mapToLong**。这些方法和前面说的map方法的工作方式一样，只是它们返回的是一个特化流，而不是Stream<T>。
 ```java
 int calories = menu.stream() 
                     .mapToInt(Dish::getCalories) 
@@ -582,15 +582,17 @@ Stream<Integer> stream = intStream.boxed();
 ```
 #####  默认值OptionalInt
 求和的那个例子很容易，因为它有一个默认值：0。但是，如果你要计算IntStream中的最大元素，就得换个法子了，因为0是错误的结果。如何区分没有元素的流和最大值真的是0的流呢？
-前面我们介绍了Optional类，这是一个可以表示值存在或不存在的容器。Optional可以用Integer、String等参考类型来参数化。对于三种原始流特化，也分别有一个Optional原始类型特化版本：OptionalInt、OptionalDouble和OptionalLong。
+前面我们介绍了Optional类，这是一个可以表示值存在或不存在的容器。Optional可以用Integer、String等参考类型来参数化。对于三种原始流特化，也分别有一个Optional原始类型特化版本：**OptionalInt**、**OptionalDouble**和**OptionalLong**。
 例如，要找到IntStream中的最大元素，可以调用max方法，它会返回一个OptionalInt：
+
 ```java
 OptionalInt maxCalories = menu.stream() 
                                 .mapToInt(Dish::getCalories) 
                                 .max(); 
 ```
 现在，如果没有最大值的话，你就可以显式处理OptionalInt去定义一个默认值了：
-int max = maxCalories.orElse(1);
+**int max = maxCalories.orElse(1);**
+
 #### collect（数据收集器）
 更易复合和重用。收集器非常有用，因为用它可以简洁而灵活地定义collect用来生成结果集合的标准。更具体地说，对流调用collect方法将对流中的元素触发一个归约操作（由Collector来参数化）。图6-1所示的归约操作所做的工作和代码清单6-1中的指令式代码一样。它遍历流中的每个元素，并让Collector进建立累积交易分组的Map迭代Transac￾tion的List提取Tran￾saction的货币如果分组Map中没有这种货币的条目，就创建一个将当前遍历的Transaction加入同一货币的Transac￾tion的List
 图6-1 按货币对交易分组的归约过程一般来说，Collector会对元素应用一个转换函数（很多时候是不体现任何效果的恒等转换，例如toList），并将结果累积在一个数据结构中，从而产生这一过程的最终输出。
